@@ -163,6 +163,14 @@
 ///-----------------------------------------------------------
 
 /**
+ Creates an instance of the EZMicrophone with a delegate to respond to the audioReceived callback. This will not start fetching the audio until startFetchingAudio has been called. This initializer takes an audio device id which will be used instead of the default input/output devices.
+ @param 	delegate 	A EZMicrophoneDelegate delegate that will receive the audioReceived callback.
+ @param		deviceID	The audio device to use for capturing.
+ @return	An instance of the EZMicrophone class. This should be strongly retained.
+ */
+- (EZMicrophone *)initWithMicrophoneDelegate:(id<EZMicrophoneDelegate>)microphoneDelegate audioDeviceID:(AudioDeviceID)deviceID;
+
+/**
  Creates an instance of the EZMicrophone with a delegate to respond to the audioReceived callback. This will not start fetching the audio until startFetchingAudio has been called. Use initWithMicrophoneDelegate:startsImmediately: to instantiate this class and immediately start fetching audio data.
  @param 	delegate 	A EZMicrophoneDelegate delegate that will receive the audioReceived callback.
  @return	An instance of the EZMicrophone class. This should be strongly retained.

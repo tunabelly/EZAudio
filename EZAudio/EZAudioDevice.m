@@ -355,6 +355,22 @@
 }
 
 //------------------------------------------------------------------------------
+
++ (instancetype)deviceWithID:(AudioDeviceID)deviceID
+{
+	EZAudioDevice *device = [EZAudioDevice new];
+	
+	device.deviceID = deviceID;
+	device.manufacturer = [self manufacturerForDeviceID:deviceID];
+	device.name = [self namePropertyForDeviceID:deviceID];
+	device.UID = [self UIDPropertyForDeviceID:deviceID];
+	device.inputChannelCount = [self channelCountForScope:kAudioObjectPropertyScopeInput forDeviceID:deviceID];
+	device.outputChannelCount = [self channelCountForScope:kAudioObjectPropertyScopeOutput forDeviceID:deviceID];
+
+	return device;
+}
+
+//------------------------------------------------------------------------------
 #pragma mark - Utility
 //------------------------------------------------------------------------------
 

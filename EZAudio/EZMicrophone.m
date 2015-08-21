@@ -57,6 +57,7 @@ static OSStatus EZAudioMicrophoneCallback(void                       *inRefCon,
 //------------------------------------------------------------------------------
 
 @interface EZMicrophone ()
+@property AudioDeviceID customAudioDeviceID;
 @property (nonatomic, strong) EZAudioFloatConverter *floatConverter;
 @property (nonatomic, assign) EZMicrophoneInfo      *info;
 @end
@@ -87,6 +88,8 @@ static OSStatus EZAudioMicrophoneCallback(void                       *inRefCon,
     self = [super init];
     if(self)
     {
+		self.customAudioDeviceID = kAudioDeviceUnknown;
+		
         self.info = (EZMicrophoneInfo *)malloc(sizeof(EZMicrophoneInfo));
         memset(self.info, 0, sizeof(EZMicrophoneInfo));
         [self setup];
@@ -101,12 +104,24 @@ static OSStatus EZAudioMicrophoneCallback(void                       *inRefCon,
     self = [super init];
     if(self)
     {
+		self.customAudioDeviceID = kAudioDeviceUnknown;
+		
         self.info = (EZMicrophoneInfo *)malloc(sizeof(EZMicrophoneInfo));
         memset(self.info, 0, sizeof(EZMicrophoneInfo));
         _delegate = delegate;
         [self setup];
     }
     return self;
+}
+
+//------------------------------------------------------------------------------
+
+- (EZMicrophone *)initWithMicrophoneDelegate:(id<EZMicrophoneDelegate>)delegate audioDeviceID:(AudioDeviceID)deviceID
+{
+	self = [self initWithMicrophoneDelegate:delegate];
+	self.customAudioDeviceID = deviceID;
+	
+	return self;
 }
 
 //------------------------------------------------------------------------------
@@ -237,8 +252,17 @@ static OSStatus EZAudioMicrophoneCallback(void                       *inRefCon,
                                                        sizeof(flag))
                         operation:"Couldn't enable input on remote IO unit."];
 #endif
-    [self setDevice:[EZAudioDevice currentInputDevice]];
-    
+	if (self.customAudioDeviceID == kAudioDeviceUnknown)
+	{
+		// use the default device
+		[self setDevice:[EZAudioDevice currentInputDevice]];
+	}
+	else
+	{
+		// use the custom device
+		[self setDevice:[EZAudioDevice deviceWithID:self.customAudioDeviceID]];
+	}
+		
     UInt32 propSize = sizeof(self.info->inputFormat);
     [EZAudioUtilities checkResult:AudioUnitGetProperty(self.info->audioUnit,
                                                        kAudioUnitProperty_StreamFormat,

@@ -74,6 +74,14 @@
  */
 + (NSArray *)outputDevices;
 
+//------------------------------------------------------------------------------
+
+/**
+ Create an EZAudioDevice instance from an AudioDeviceID
+ @return EZAudioDevice instance.
+ */
++ (instancetype)deviceWithID:(AudioDeviceID)deviceID;
+
 #if TARGET_OS_IPHONE
 
 //------------------------------------------------------------------------------
